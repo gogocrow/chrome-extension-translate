@@ -1,0 +1,20 @@
+# EditorConfig 配置
+# https://editorconfig.org
+
+# 所有文件通用配置
+[*]
+charset = utf-8
+indent_style = space
+indent_size = 2
+end_of_line = lf
+trim_trailing_whitespace = true
+insert_final_newline = true
+max_line_length = 100
+
+# JavaScript文件配置
+[*.{js}]
+quote_type = single
+
+# Markdown 文件配置
+[*.md]
+trim_trailing_whitespace = false 

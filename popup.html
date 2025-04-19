@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>网页翻译助手</title>
+  <style>
+    body {
+      width: 300px;
+      padding: 10px;
+      font-family: Arial, sans-serif;
+    }
+    button {
+      width: 100%;
+      padding: 8px;
+      margin: 5px 0;
+      background-color: #4285f4;
+      color: white;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+    button:hover {
+      background-color: #3367d6;
+    }
+    .status {
+      margin-top: 10px;
+      padding: 5px;
+      border-radius: 4px;
+    }
+    .api-key-section {
+      margin-top: 10px;
+    }
+    #apiKey {
+      width: 100%;
+      padding: 5px;
+      margin-bottom: 5px;
+    }
+    .model-selection {
+      margin-bottom: 10px;
+    }
+    #modelSelector {
+      width: 100%;
+      padding: 5px;
+    }
+    .config-link {
+      display: block;
+      text-align: right;
+      color: #4285f4;
+      text-decoration: none;
+      margin: 5px 0;
+      font-size: 14px;
+    }
+    .config-link:hover {
+      text-decoration: underline;
+    }
+  </style>
+</head>
+<body>
+  <h2>网页翻译助手</h2>
+  
+  <div class="model-selection">
+    <p>选择模型：</p>
+    <select id="modelSelector"></select>
+    <a href="model-config.html" class="config-link">模型配置 →</a>
+  </div>
+  
+  <button id="translateButton">翻译当前页面</button>
+  
+  <div class="api-key-section">
+    <p>请输入API密钥：</p>
+    <input type="text" id="apiKey" placeholder="输入大模型API密钥">
+    <button id="saveApiKey">保存密钥</button>
+  </div>
+  
+  <div id="status" class="status"></div>
+  
+  <script src="popup.js"></script>
+</body>
+</html> 
