@@ -4,10 +4,14 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
     const modelConfig = request.modelConfig;
     
     try {
+      // 显示翻译中提示
+      showTranslatingIndicator();
+      
       // 提取页面核心内容
       const mainContent = extractMainContent();
       
       if (!mainContent) {
+        hideTranslatingIndicator();
         sendResponse({ success: false, error: '无法识别页面主要内容' });
         return;
       }
@@ -18,6 +22,9 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
         modelConfig: modelConfig,
         text: mainContent.outerHTML
       }, response => {
+        // 隐藏翻译中提示
+        hideTranslatingIndicator();
+        
         if (response && response.success) {
           // 替换原内容为翻译后的内容
           replaceContent(mainContent, response.translatedText);
@@ -32,11 +39,57 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
       
       return true; // 异步响应
     } catch (error) {
+      hideTranslatingIndicator();
       console.error('Content script error:', error);
       sendResponse({ success: false, error: error.message });
     }
+  } else if (request.action === 'showTranslating') {
+    showTranslatingIndicator();
+    sendResponse({ success: true });
+    return false;
+  } else if (request.action === 'hideTranslating') {
+    hideTranslatingIndicator();
+    sendResponse({ success: true });
+    return false;
   }
 });
+
+// 显示翻译中提示
+function showTranslatingIndicator() {
+  // 如果已经存在提示，则不重复创建
+  if (document.getElementById('translating-indicator')) {
+    return;
+  }
+  
+  // 创建提示元素
+  const indicator = document.createElement('div');
+  indicator.id = 'translating-indicator';
+  indicator.textContent = '翻译中...';
+  
+  // 设置样式
+  indicator.style.position = 'fixed';
+  indicator.style.bottom = '20px';
+  indicator.style.right = '20px';
+  indicator.style.backgroundColor = 'rgba(66, 133, 244, 0.9)';
+  indicator.style.color = 'white';
+  indicator.style.padding = '8px 15px';
+  indicator.style.borderRadius = '4px';
+  indicator.style.boxShadow = '0 2px 5px rgba(0, 0, 0, 0.2)';
+  indicator.style.zIndex = '10000';
+  indicator.style.fontFamily = 'Arial, sans-serif';
+  indicator.style.fontSize = '14px';
+  
+  // 添加到页面
+  document.body.appendChild(indicator);
+}
+
+// 隐藏翻译中提示
+function hideTranslatingIndicator() {
+  const indicator = document.getElementById('translating-indicator');
+  if (indicator) {
+    indicator.remove();
+  }
+}
 
 // 提取页面的主要内容区域
 function extractMainContent() {

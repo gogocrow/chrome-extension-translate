@@ -78,18 +78,28 @@ document.addEventListener('DOMContentLoaded', function() {
     statusDiv.style.backgroundColor = '#fff3cd';
 
     chrome.tabs.query({active: true, currentWindow: true}, function(tabs) {
+      // 先发送显示翻译中提示的消息
       chrome.tabs.sendMessage(
-        tabs[0].id, 
-        {
-          action: 'translate', 
-          modelConfig: selectedModel
-        }, 
-        function(response) {
-          if (response && response.success) {
-            showStatus('翻译成功！', 'success');
-          } else {
-            showStatus('翻译失败：' + (response ? response.error : '未知错误'), 'error');
-          }
+        tabs[0].id,
+        { action: 'showTranslating' },
+        function() {
+          // 然后发送翻译请求
+          chrome.tabs.sendMessage(
+            tabs[0].id, 
+            {
+              action: 'translate', 
+              modelConfig: selectedModel
+            }, 
+            function(response) {
+              if (response && response.success) {
+                showStatus('翻译成功！', 'success');
+              } else {
+                // 如果翻译失败，隐藏翻译中提示
+                chrome.tabs.sendMessage(tabs[0].id, { action: 'hideTranslating' });
+                showStatus('翻译失败：' + (response ? response.error : '未知错误'), 'error');
+              }
+            }
+          );
         }
       );
     });
